@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/mvc"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:beans="http://www.springframework.org/schema/beans"
+    xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+    xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd">
+
+
+    <beans:bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
+        destroy-method="close">
+        <beans:property name="driverClassName" value="org.postgresql.Driver" />
+        <beans:property name="url"
+            value="jdbc:postgresql://localhost/saleashion" />
+        <beans:property name="username" value="postgres" />
+        <beans:property name="password" value="12345" />
+    </beans:bean>
+
+    <!-- Hibernate 4 SessionFactory Bean definition -->
+    <beans:bean id="hibernate4AnnotatedSessionFactory"
+        class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+        <beans:property name="dataSource" ref="dataSource" />
+        <beans:property name="annotatedClasses">
+            <beans:list>
+                <beans:value>com.spring.demo.model.Category</beans:value>
+                <beans:value>com.spring.demo.model.ProductSimilar</beans:value>
+                <beans:value>com.spring.demo.model.Product</beans:value>
+                 <beans:value>com.spring.demo.model.User</beans:value>
+                 <beans:value>com.spring.demo.model.Customer</beans:value>
+                 <beans:value>com.spring.demo.model.Order</beans:value>
+                 <beans:value>com.spring.demo.model.OrderDetail</beans:value>
+                 
+            </beans:list>
+        </beans:property>
+        <beans:property name="hibernateProperties">
+            <beans:props>
+                <beans:prop key="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect
+                </beans:prop>
+                <beans:prop key="hibernate.show_sql">true</beans:prop>
+                <beans:prop key="hibernate.hbm2ddl.auto">update</beans:prop>
+            </beans:props>
+        </beans:property>
+    </beans:bean>
+
+    <beans:bean id="categoryDAO" class="com.spring.demo.dao.CategoryDAOImpl">
+        <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
+    </beans:bean>
+    <beans:bean id="categoryService" class="com.spring.demo.service.CategoryServiceImpl">
+        <beans:property name="categoryDAO" ref="categoryDAO"></beans:property>
+    </beans:bean>
+    
+    <beans:bean id="productDAO" class="com.spring.demo.dao.ProductDAOImpl">
+        <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
+    </beans:bean>
+    <beans:bean id="productService" class="com.spring.demo.service.ProductServiceImpl">
+        <beans:property name="productDAO" ref="productDAO"></beans:property>
+    </beans:bean>
+    
+     <beans:bean id="userDAO" class="com.spring.demo.dao.UserDAOImpl">
+        <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
+    </beans:bean>
+    <beans:bean id="userService" class="com.spring.demo.service.UserServiceImpl">
+        <beans:property name="userDAO" ref="userDAO"></beans:property>
+    </beans:bean>
+    
+    <beans:bean id="customerDAO" class="com.spring.demo.dao.CustomerDAOImpl">
+        <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
+    </beans:bean>
+    <beans:bean id="customerService" class="com.spring.demo.service.CustomerServiceImpl">
+        <beans:property name="customerDAO" ref="customerDAO"></beans:property>
+    </beans:bean>
+    
+    <beans:bean id="orderDAO" class="com.spring.demo.dao.OrderDAOImpl">
+        <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
+    </beans:bean>
+    <beans:bean id="orderService" class="com.spring.demo.service.OrderServiceImpl">
+        <beans:property name="orderDAO" ref="orderDAO"></beans:property>
+    </beans:bean>
+    
+    <beans:bean id="orderDetailDAO" class="com.spring.demo.dao.OrderDetailDAOImpl">
+        <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
+    </beans:bean>
+    <beans:bean id="orderDetailService" class="com.spring.demo.service.OrderDetailServiceImpl">
+        <beans:property name="orderDetailDAO" ref="orderDetailDAO"></beans:property>
+    </beans:bean>
+    
+
+    <context:component-scan base-package="com.spring.demo" />
+
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+
+    <beans:bean id="transactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+        <beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
+    </beans:bean>
+
+	
+</beans:beans>

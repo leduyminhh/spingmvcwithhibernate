@@ -1,0 +1,1 @@
+insert into user_account(username,password,status,role) values ('admin','12345',1,'ADMIN');
